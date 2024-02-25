@@ -17,6 +17,8 @@ import { AuthService } from './auth.service';
 import { UserService } from '../user/user.service';
 import { userDto } from 'src/user/dto/user.dto';
 import { loginDto } from './dto/login.dto';
+import { AuthGuard } from 'src/guards/auth-jwt.guard';
+import { IExpressRequest } from 'src/@types/auth';
 
 @Controller('auth')
 export class AuthController {
@@ -48,6 +50,7 @@ export class AuthController {
   @Post('/login')
   async login(@Body() body: loginDto) {
     try {
+      console.log('route', body);
       const user = await this.userService.findUserByEmail(body.email);
       if (!user) {
         throw new NotFoundException('User not found');
@@ -60,8 +63,21 @@ export class AuthController {
         throw new BadRequestException('Invalid Password');
       }
       const { password, ...payload } = user;
+      console.log('login success');
       const token = this.authService.generateToken(payload);
+      console.log('token success');
       return { token, user: payload };
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  @Get('/profile')
+  @UseGuards(AuthGuard)
+  async getProfile(@Req() req: IExpressRequest) {
+    try {
+      const user = await this.userService.findUserById(req.user.id);
+      return user;
     } catch (error) {
       throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
