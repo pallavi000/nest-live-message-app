@@ -1,12 +1,12 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { ChatGateway } from './chat/chat.gateway';
 import { UserModule } from './user/user.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthController } from './auth/auth.controller';
 import { AuthService } from './auth/auth.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { AuthModule } from './auth/auth.module';
+import { JwtModule, JwtService } from '@nestjs/jwt';
 
 @Module({
   imports: [
@@ -26,8 +26,10 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
       }),
     }),
     UserModule,
+    AuthModule,
   ],
-  controllers: [AppController, AuthController],
-  providers: [AppService, ChatGateway, AuthService],
+  controllers: [AuthController],
+  providers: [ChatGateway, AuthService],
+  exports: [],
 })
 export class AppModule {}

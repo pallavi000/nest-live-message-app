@@ -1,19 +1,23 @@
 import {
+  Body,
   Controller,
   Get,
   HttpException,
   HttpStatus,
   Param,
   Post,
+  UseGuards,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { userDto } from './dto/user.dto';
+import { AuthGuard } from 'src/guards/auth-jwt.guard';
 
 @Controller('users')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Get()
+  @UseGuards(AuthGuard)
   async getUsers() {
     try {
       const users = await this.userService.getUsers();
@@ -23,9 +27,10 @@ export class UserController {
     }
   }
 
-  @Post()
-  async createUser(body: userDto) {
+  @Post('')
+  async createUser(@Body() body: userDto) {
     try {
+      console.log(body, 'controller');
       const user = await this.userService.createUser(body);
       return user;
     } catch (error) {
