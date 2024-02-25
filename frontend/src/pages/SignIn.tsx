@@ -12,8 +12,8 @@ import Grid from "@mui/material/Grid";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import axios from "axios";
 import axiosInstance from "../utils/AxiosInstance";
+import { useAuthContext } from "../context/AuthContext";
 
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme();
@@ -26,13 +26,16 @@ export default function SignIn() {
       email: formData.get("email"),
       password: formData.get("password"),
     };
+
+    const { setToken } = useAuthContext();
+
     try {
       const response = await axiosInstance.post("/auth/login", data);
+      console.log(response.data);
+      setToken(response.data.token);
       if (response.data?.user) {
-        localStorage.setItem("token", response.data.token);
         window.location.href = "/";
       }
-
       return response;
     } catch (error) {
       console.log(error);

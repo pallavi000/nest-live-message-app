@@ -76,6 +76,7 @@ export class AuthController {
   @UseGuards(AuthGuard)
   async getProfile(@Req() req: IExpressRequest) {
     try {
+      console.log(req.user);
       const user = await this.userService.findUserById(req.user.id);
       return user;
     } catch (error) {
