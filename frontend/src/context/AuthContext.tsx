@@ -24,7 +24,7 @@ function AuthContextProvider({ children }: React.PropsWithChildren) {
   const getCurrentUser = async () => {
     try {
       const response = await axiosInstance.get("/auth/profile");
-      console.log(response.data);
+
       setUser(response.data);
     } catch (error) {
       //console.log(error.message);

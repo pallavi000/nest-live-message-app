@@ -13,11 +13,14 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import axiosInstance from "../utils/AxiosInstance";
+import { useAuthContext } from "../context/AuthContext";
 
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme();
 
 export default function SignUp() {
+  const { setToken } = useAuthContext();
+
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
@@ -31,7 +34,7 @@ export default function SignUp() {
 
     const response = await axiosInstance.post("/auth/register", data);
     if (response.data?.user) {
-      localStorage.setItem("token", response.data.token);
+      setToken(response.data.token);
       window.location.href = "/";
     }
 

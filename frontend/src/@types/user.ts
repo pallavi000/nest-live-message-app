@@ -11,18 +11,9 @@ export interface RegisterInputs extends LoginInputs {
   name: string;
 }
 
-export type TMember = {
-  id: number;
-  memberType: string;
-  memberSince: string;
-  isActive: boolean;
-  createdAt: string;
-  updatedAt: string;
-  user: TUser;
-};
-
 export type TUser = {
   id: number;
+  socketId: string;
   firstName: string;
   lastName: string;
   email: string;

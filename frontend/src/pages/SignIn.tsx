@@ -19,6 +19,8 @@ import { useAuthContext } from "../context/AuthContext";
 const defaultTheme = createTheme();
 
 export default function SignIn() {
+  const { setToken } = useAuthContext();
+
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
@@ -26,9 +28,6 @@ export default function SignIn() {
       email: formData.get("email"),
       password: formData.get("password"),
     };
-
-    const { setToken } = useAuthContext();
-
     try {
       const response = await axiosInstance.post("/auth/login", data);
       console.log(response.data);

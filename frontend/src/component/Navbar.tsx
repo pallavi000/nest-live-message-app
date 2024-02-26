@@ -22,7 +22,6 @@ function Navbar() {
   const [anchorElUser, setAnchorElUser] = React.useState(null);
 
   const { user, logout } = useAuthContext();
-  console.log(user);
 
   const handleOpenNavMenu = (event: any) => {
     setAnchorElNav(event.currentTarget);
