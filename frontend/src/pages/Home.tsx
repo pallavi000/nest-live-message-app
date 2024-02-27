@@ -1,15 +1,26 @@
 import React, { useEffect, useRef, useState } from "react";
 import { io } from "socket.io-client";
 import { useAuthContext } from "../context/AuthContext";
-import { Button, Input, TextField, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Card,
+  Grid,
+  Input,
+  TextField,
+  Typography,
+} from "@mui/material";
 import { TUser } from "../@types/user";
+import Chatlist from "../component/Chatlist";
+import Message from "../component/Message";
+import ActiveUser from "../component/ActiveUser";
 
 function Home() {
   const { user } = useAuthContext();
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState<any[]>([]);
   const [onlineUsers, setOnlineUsers] = useState<TUser[]>([]);
-  const [activeUser, setActiveUser] = useState<TUser>();
+  const [activeUser, setActiveUser] = useState<TUser | undefined>();
 
   const socket = useRef<any>();
 
@@ -55,27 +66,38 @@ function Home() {
 
   return (
     <>
-      {onlineUsers.map((user: TUser) => {
-        return (
-          <Button variant="contained" onClick={() => setActiveUser(user)}>
-            {user.firstName}
-          </Button>
-        );
-      })}
-      {activeUser ? (
-        <form onSubmit={handleSubmit}>
-          <Input
-            required
-            name="message"
-            onChange={(e) => setMessage(e.target.value)}
-          />
-          <button type="submit">send</button>
-        </form>
-      ) : null}
-      <Typography variant="h6">Message List</Typography>
-      {messages.map((message) => {
-        return <div>{message.message}</div>;
-      })}
+      <Grid container>
+        <Grid item md={4}>
+          <Typography variant="h6">Active User</Typography>
+          {onlineUsers.map((user: TUser) => {
+            return <ActiveUser user={user} setActiveUser={setActiveUser} />;
+          })}
+        </Grid>
+
+        <Grid item md={4}>
+          <Typography variant="h6">Message List</Typography>
+          {messages.map((message) => {
+            return <Message message={message} />;
+          })}
+          <Box sx={{ width: "100%" }}>
+            {activeUser ? (
+              <Card
+                sx={{ width: "100%", display: "flex", gap: "1rem" }}
+                component="form"
+                onSubmit={handleSubmit}
+              >
+                <Input
+                  sx={{ width: "100%" }}
+                  required
+                  name="message"
+                  onChange={(e) => setMessage(e.target.value)}
+                />
+                <button type="submit">send</button>
+              </Card>
+            ) : null}
+          </Box>
+        </Grid>
+      </Grid>
     </>
   );
 }
